@@ -1,0 +1,67 @@
+# Copyright 2017 The Openstack-Helm Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Default values for elasticsearch
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+labels:
+  master:
+    node_selector_key: elasticsearch-master-node
+    node_selector_value: enabled
+  data:
+    node_selector_key: elasticsearch-data-node
+    node_selector_value: enabled
+  client:
+    node_selector_key: elasticsearch-client-node
+    node_selector_value: enabled
+
+replicas:
+  master: 3
+  data: 2
+  client: 2
+
+images:
+  elasticsearch: gcr.io/google_containers/elasticsearch:v2.4.1-2
+  pull_policy: "IfNotPresent"
+
+network:
+  client:
+    name: http
+    port: 9200
+    proto: TCP
+  discovery:
+    name: transport
+    port: 9300
+    proto: TCP
+  service:
+    cluster: elasticsearch-cluster
+    client: elasticsearch-logging
+
+upgrades:
+  revision_history: 3
+  pod_replacement_strategy: RollingUpdate
+  rolling_update:
+    max_unavailable: 1
+    max_surge: 3
+
+resources:
+  enabled: false
+  client:
+    limits:
+      memory: "128Mi"
+      cpu: "500m"
+    requests:
+      memory: "128Mi"
+      cpu: "500m"

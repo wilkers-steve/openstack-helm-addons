@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-logging
+  labels:
+    k8s-app: elasticsearch-logging
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "Elasticsearch"
+spec:
+  type: LoadBalancer
+  selector:
+    k8s-app: elasticsearch-logging
+    role: client
+  ports:
+  - name: {{ .Values.network.client.name }}
+    port: {{ .Values.network.client.port }}
+    protocol: {{ .Values.network.client.proto }}
