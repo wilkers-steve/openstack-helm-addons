@@ -16,16 +16,17 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-alertmanagers:
+alertmanager:
   name: alertmanager-main
   namespace: monitoring
+  label: main
 
 images:
   maas_region: quay.io/attcomdev/maas-region:2.1.2-2
   pull_policy: Always
 
 network:
-  alertmanagers:
+  alertmanager:
     port: web
   service:
     name: web

@@ -17,11 +17,11 @@ apiVersion: monitoring.coreos.com/v1alpha1
 kind: ServiceMonitor
 metadata:
   labels:
-    alertmanager: main
+    alertmanager: {{ .Values.alertmanager.label }}
   name: alertmanager
 spec:
   endpoints:
-  - port: web
+  - port: {{ .Values.network.alertmanager.port }}
   selector:
     matchExpressions:
-    - {key: alertmanager, operator: In, values: [main]}
+    - {key: alertmanager, operator: In, values: [ {{ .Values.alertmanager.label }} ]}
