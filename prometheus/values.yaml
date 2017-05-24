@@ -16,44 +16,58 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-alertmanager:
-  name: alertmanager-main
-  namespace: monitoring
-  label: main
+monitors:
+  alertmanager:
+    endpoint:
+      port: web
+  prometheus:
+    endpoint:
+      port: web
+      interval:
+  node_exporter:
+    endpoint:
+      port: http-metrics
+      interval:
+  kubelet:
+    endpoint:
+      port: http-metrics
+      interval:
+  kube_state_metrics:
+    endpoint:
+      port: http-metrics
+      interval:
+  k8s_apps:
+    endpoints:
+      metrics:
+        port: http-metric
+        interval: 15s
+      dnsmasq:
+        port: http-metrics-dnsmasq
+        interval: 15s
+      skydns:
+        port: http-metrics-skydns
+        interval: 15s
+  kube_apiserver:
+    endpoints:
+      port: https
+      interval: 15s
 
-images:
-  maas_region: quay.io/attcomdev/maas-region:2.1.2-2
-  pull_policy: Always
 
 network:
-  alertmanager:
-    port: web
-  service:
+  node_port:
+    enabled: true
+    port: 30900
+  port:
     name: web
-    node_port:
-      enabled: false
-      port: 30900
     port: 9090
-
-prometheus:
-  target:
-    name: k8s
-    label: k8s
+    target_port: web
 
 replicas:
-  prometheus: 1
+  prometheus: 2
 
 resources:
   enabled: false
-  prometheus:
-    limits:
-      memory: "128Mi"
-      cpu: "500m"
-    requests:
-      memory: "128Mi"
-      cpu: "500m"
+  requests:
+    memory: 400Mi
 
-service_account:
-  name: prometheus-k8s 
-
-version: v1.6.1
+version: v1.6.3

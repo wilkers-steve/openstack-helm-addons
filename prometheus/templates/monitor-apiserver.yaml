@@ -28,8 +28,8 @@ spec:
     matchNames:
     - default
   endpoints:
-  - port: https
-    interval: 15s
+  - port: {{ .Values.monitors.kube_apiserver.endpoints.port }}
+    interval: {{ .Values.monitors.kube_apiserver.endpoints.interval }}
     scheme: https
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt

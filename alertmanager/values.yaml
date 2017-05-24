@@ -12,25 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    prometheus: k8s
-  name: prometheus-k8s
-spec:
-  {{ if .Values.network.node_port.enabled }}
-  type: NodePort
-  {{ else }}
-  type: LoadBalancer
-  {{ end }}
-  ports:
-  - name: {{ .Values.network.port.name }}
-    {{ if .Values.network.node_port.enabled }}
-    nodePort: {{ .Values.network.node_port.port }}
-    {{ end }}
-    port: {{ .Values.network.port.port }}
-    protocol: TCP
-    targetPort: {{ .Values.network.port.target_port }}
-  selector:
-    prometheus: k8s
+# Default values for alertmanager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+alertmanager:
+  metadata:
+    label:
+      alertmanager: "main"
+    name: "main"
+  version: v0.6.2
+
+network:
+  node_port:
+      enabled: false
+      port: 30903
+  port:
+    name: web
+    port: 9093
+    target_port: web
+
+replicas:
+  alertmanager: 3
+
+secret:
+  name: alertmanager-main
+
+service:
+  metadata:
+    label:
+      alertmanager: main
+    name: alertmanager-main
+  selector: main

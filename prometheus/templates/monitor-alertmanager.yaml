@@ -12,16 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ServiceMonitor
 metadata:
   labels:
-    alertmanager: {{ .Values.alertmanager.label }}
+    alertmanager: main
   name: alertmanager
 spec:
   endpoints:
-  - port: {{ .Values.network.alertmanager.port }}
+  - port: {{ .Values.monitors.alertmanager.endpoint.port }}
   selector:
     matchExpressions:
-    - {key: alertmanager, operator: In, values: [ {{ .Values.alertmanager.label }} ]}
+    - {key: alertmanager, operator: In, values: [main]}

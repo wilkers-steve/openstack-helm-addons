@@ -29,9 +29,9 @@ spec:
     matchNames:
     - kube-system
   endpoints:
-  - port: http-metrics
-    interval: 15s
-  - port: http-metrics-dnsmasq
-    interval: 15s
-  - port: http-metrics-skydns
-    interval: 15s
+  - port: {{ .Values.monitors.k8s_apps.endpoints.metrics.port }}
+    interval: {{ .Values.monitors.k8s_apps.endpoints.metrics.interval }}
+  - port: {{ .Values.monitors.k8s_apps.endpoints.dnsmasq.port }}
+    interval: {{ .Values.monitors.k8s_apps.endpoints.dnsmasq.interval }}
+  - port: {{ .Values.monitors.k8s_apps.endpoints.skydns.port }}
+    interval: {{ .Values.monitors.k8s_apps.endpoints.skydns.interval }}

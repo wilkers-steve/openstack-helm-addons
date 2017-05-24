@@ -20,7 +20,7 @@ metadata:
     prometheus: k8s
 spec:
   endpoints:
-  - port: web
+  - port: {{ .Values.monitors.prometheus.target_port }}
   selector:
     matchExpressions:
     - {key: prometheus, operator: In, values: [k8s]}

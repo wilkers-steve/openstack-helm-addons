@@ -12,25 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    prometheus: k8s
-  name: prometheus-k8s
-spec:
-  {{ if .Values.network.node_port.enabled }}
-  type: NodePort
-  {{ else }}
-  type: LoadBalancer
-  {{ end }}
-  ports:
-  - name: {{ .Values.network.port.name }}
-    {{ if .Values.network.node_port.enabled }}
-    nodePort: {{ .Values.network.node_port.port }}
-    {{ end }}
-    port: {{ .Values.network.port.port }}
-    protocol: TCP
-    targetPort: {{ .Values.network.port.target_port }}
-  selector:
-    prometheus: k8s
+description: Helm chart for AlertManager Third Party Resource Type
+name: alertmanager
+version: 0.1.0
+home: https://coreos.com/blog/the-prometheus-operator.html
+sources:
+  - https://github.com/coreos/prometheus-operator
+maintainers:
+  - name: OpenStack-Helm Authors

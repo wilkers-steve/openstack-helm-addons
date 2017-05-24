@@ -15,31 +15,27 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: Prometheus
 metadata:
-  name: {{ .Values.prometheus.target.name }}
+  name: k8s
   labels:
-    prometheus: {{ .Values.prometheus.target.label }}
+    prometheus: k8s
 spec:
   replicas: {{ .Values.replicas.prometheus }}
   version: {{ .Values.version }}
-  serviceAccountName: {{ .Values.service_account.name }}
+  serviceAccountName: prometheus-k8s
   serviceMonitorSelector:
     matchExpression:
     - {key: k8s-apps, operator: Exists}
   ruleSelector:
     matchLabels:
       role: prometheus-rulefiles
-      prometheus: {{ .Values.prometheus.target.name }}
+      prometheus: k8s
   {{ if .Values.resources.enabled }}
   resources:
     requests:
-      cpu: {{ .Values.resources.prometheus.requests.cpu }}
-      memory: {{ .Values.resources.prometheus.requests.memory }}
-    limits:
-      cpu: {{ .Values.resources.prometheus.limits.cpu }}
-      memory: {{ .Values.resources.prometheus.limits.memory }}
+      memory: {{ .Values.resources.requests.memory }}
   {{ end }}
   alerting:
     alertmanagers:
-    - namespace: {{ .Values.alertmanagers.namespace }}
-      name: {{ .Values.alertmanagers.name }}
-      port: {{ .Values.network.alertmanagers.port }}
+    - namespace: monitoring
+      name: alertmanager-main
+      port: {{ .Values.network.port.target_port }}

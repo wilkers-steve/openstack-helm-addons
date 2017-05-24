@@ -17,7 +17,8 @@
 # Declare variables to be passed into your templates.
 
 access:
-  service_account_name: prometheus_operator
+  service_account:
+    name: prometheus_operator
 
 images:
   operator: quay.io/coreos/prometheus-operator:v0.8.2

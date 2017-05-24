@@ -23,4 +23,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: prometheus-k8s
-  namespace: {{ .Values.monitoring.namespace }}
+  namespace: monitoring
