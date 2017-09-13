@@ -15,10 +15,6 @@
 manifests_enabled:
   ceph_exporter: true
 
-service:
-  mon:
-    name: ceph-mon
-
 images:
   dep_check: docker.io/kolla/ubuntu-source-kubernetes-entrypoint:4.0.0
   ceph_exporter: docker.io/digitalocean/ceph_exporter:1.0.0
