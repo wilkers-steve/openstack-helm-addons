@@ -1,0 +1,132 @@
+# Copyright 2017 The Openstack-Helm Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+manifests_enabled:
+  ceph_exporter: true
+
+service:
+  mon:
+    name: ceph-mon
+
+images:
+  dep_check: docker.io/kolla/ubuntu-source-kubernetes-entrypoint:4.0.0
+  ceph_exporter: docker.io/digitalocean/ceph_exporter:1.0.0
+  pull_policy: "IfNotPresent"
+
+labels:
+  ceph_exporter:
+    node_selector_key: openstack-control-plane
+    node_selector_value: enabled
+
+pod:
+  dns_policy: "ClusterFirstWithHostNet"
+  affinity:
+      anti:
+        type:
+          default: preferredDuringSchedulingIgnoredDuringExecution
+        topologyKey:
+          default: kubernetes.io/hostname
+  lifecycle:
+    upgrades:
+      deployments:
+        revision_history: 3
+        pod_replacement_strategy: RollingUpdate
+        rolling_update:
+          max_unavailable: 1
+          max_surge: 3
+    termination_grace_period:
+      timeout: 600
+  mounts:
+    ceph_exporter:
+      ceph_exporter:
+      init_container:
+  replicas:
+    ceph_exporter: 3
+  resources:
+    enabled: false
+    ceph_exporter:
+      requests:
+        memory: "5Mi"
+        cpu: "250m"
+      limits:
+        memory: "50Mi"
+        cpu: "500m"
+
+secrets:
+  keyrings:
+    mon: ceph-mon-keyring
+    admin: ceph-client-admin-keyring
+
+network:
+  ceph_exporter:
+    port: 9128
+    ingress:
+      public: true
+    node_port:
+      enabled: false
+      port: 30128
+
+dependencies:
+  mon:
+    jobs:
+    service:
+  osd:
+    jobs:
+    services:
+    - service: ceph_mon
+      endpoint: internal
+  moncheck:
+    jobs:
+    services:
+    - service: ceph_mon
+      endpoint: internal
+  rgw:
+    jobs:
+    services:
+    - service: ceph_mon
+      endpoint: internal
+  mds:
+    jobs:
+    services:
+    - service: ceph_mon
+      endpoint: internal
+  bootstrap:
+    jobs:
+    services:
+    - service: ceph_mon
+      endpoint: internal
+  rbd_provisioner:
+    jobs:
+    - service: ceph_mon
+      endpoint: internal
+  ceph_exporter:
+    jobs:
+    - ceph-mon-keyring-generator
+    services:
+    - service: ceph_mon
+      endpoint: internal
+
+endpoints:
+  cluster_domain_suffix: cluster.local
+  ceph_exporter:
+    namespace: null
+    hosts:
+      default: ceph-exporter
+    host_fqdn_overide:
+      default: null
+    path: /metrics
+    scheme: http
+    port:
+      exporter:
+        default: 9128
